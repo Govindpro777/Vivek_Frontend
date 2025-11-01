@@ -1,6 +1,10 @@
 import axios from "axios";
 
-const API_URL = process.env.BASE_URL;
+// Use Vite env variables in the frontend. Vite exposes env vars via import.meta.env
+// Only variables prefixed with VITE_ are exposed to client code by default.
+// Fall back to other possible vars or to '/' if none are set.
+const API_URL = import.meta.env.VITE_BASE_URL;
+console.log("API URL:", API_URL);
 
 const api = axios.create({
   baseURL: API_URL,
