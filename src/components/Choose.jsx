@@ -204,25 +204,13 @@
 
 // export default ProopCoChallengeSelector;
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const ProopCoChallengeSelector = () => {
   const navigate = useNavigate();
   const [selectedChallenge, setSelectedChallenge] = useState("Flex");
   const [selectedPlan, setSelectedPlan] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  // Check authentication on component mount
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      // Redirect to login if no token found
-      navigate("/login");
-      return;
-    }
-    setIsAuthenticated(true);
-  }, [navigate]);
 
   const challenges = [
     { id: "custom", label: "Custom", isActive: false },
@@ -305,30 +293,28 @@ const ProopCoChallengeSelector = () => {
   };
 
   const handleChallengeSelect = (challengeId) => {
-    // Check authentication before allowing action
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/login");
-      return;
-    }
-
     setSelectedChallenge(challengeId);
     setSelectedPlan(null);
   };
 
   const handleStartChallenge = (planId) => {
-    // Check authentication before starting challenge
+    // Check if user is authenticated before starting challenge
     const token = localStorage.getItem("token");
+
     if (!token) {
+      // If no token, redirect to login page
       navigate("/login");
       return;
     }
 
+    // If authenticated, proceed with challenge start
     setSelectedPlan(planId);
     console.log(`Starting challenge: ${selectedChallenge} - ${planId}`);
-    // Add your navigation or API call logic here
-    // For example, you might want to navigate to a purchase page:
+
+    // Add your navigation or API call logic here for authenticated users
+    // For example:
     // navigate(`/purchase?challenge=${selectedChallenge}&plan=${planId}`);
+    // Or make an API call to start the challenge
   };
 
   const getFeatureValue = (value) => {
@@ -336,18 +322,6 @@ const ProopCoChallengeSelector = () => {
     if (value === "Allow") return { text: value, color: "text-yellow-400" };
     return { text: value, color: "text-green-400" };
   };
-
-  // Show loading screen while checking authentication
-  if (!isAuthenticated) {
-    return (
-      <div className="bg-black min-h-screen text-white flex items-center justify-center">
-        <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 border-4 border-yellow-400 border-t-transparent rounded-full animate-spin"></div>
-          <span className="text-white text-lg">Checking authentication...</span>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="bg-black min-h-screen text-white py-16 px-4">
